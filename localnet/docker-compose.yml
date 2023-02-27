@@ -1,0 +1,18 @@
+services:
+  iostnode:
+    build:
+      dockerfile: ./Dockerfile
+    platform: linux/amd64
+    container_name: iserver
+    ports:
+      - "30000-30003:30000-30003"
+    command: iserver -f /var/lib/iserver/iserver.yml 2>&1
+    environment:
+      - ADMIN=2yquS3ySrGWPEKywCPzX4RTJugqRh7kJSo5aehsLYPEWkUxBWA39oMrZ7ZxuM4fgyXYs2cPwh5n8aNNpH5x2VyK1
+      - ADMINNAME=admin
+    volumes:
+      - ./iserver/logs:/var/lib/iserver/logs
+      - ./iserver/storage:/var/lib/iserver/storage
+      - ./iserver/iserver.yml:/var/lib/iserver/iserver.yml
+      - ./root:/root
+    working_dir: "/root"

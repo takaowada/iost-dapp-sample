@@ -102,3 +102,24 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# yarn
+yarn.lock
+
+# Localnet
+/localnet/iserver/
+!/localnet/iserver/iserver.yml
+/localnet/root/.iwallet/*
+/localnet/root/.node_repl_history
+
