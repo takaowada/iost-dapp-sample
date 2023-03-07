@@ -37,12 +37,14 @@ function App() {
   useEffect(() => {
     const f = async () => {
       try {
-        IOSUtil.getInstance().getMemos();
-        setMemos(memos);
-        console.log('memos', memos);
+        const iostUtil = IOSUtil.getInstance();
+        await iostUtil.init();
+        const currentMemo = await iostUtil.getMemos();
+        setMemos(currentMemo);
+        console.log('memos', currentMemo);
       } catch (e) {
         console.log(e);
-        setErr('iWalletを開いて、ログインしてください');
+        setErr('iWalletを開いて、ログイン後、リロードしてください');
       }
       //setErr('エラー');
     };
@@ -60,7 +62,7 @@ function App() {
 
   const onSubmit: SubmitHandler<Memo> = async (data: Memo) => {
     console.log('data', data);
-    const handler = await iosUtil.putMemo(data.id, data.memo);
+    const handler = await IOSUtil.getInstance().putMemo(data.id, data.memo);
     handler
       .on("pending", () => {
         console.log('Start tx.');
@@ -69,7 +71,7 @@ function App() {
         console.log('Success... tx', response);
         setResponse(response);
         console.log('response', JSON.stringify(response));
-        const memos = await iosUtil.getMemos();
+        const memos = await IOSUtil.getInstance().getMemos();
         setMemos(memos);
       })
       .on("failed", (err: any) => {

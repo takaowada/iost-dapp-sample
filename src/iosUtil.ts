@@ -12,7 +12,6 @@ export default class IOSUtil {
   private static _login: boolean = false;
 
   private constructor() {
-    this.init();
   }
 
   static getInstance() {
@@ -21,13 +20,11 @@ export default class IOSUtil {
       IOSUtil._instance = new IOSUtil();
       console.log('New IOST')
     }
-    if (!IOSUtil._login) {
-      throw new Error('Not logged in.');
-    }
     return IOSUtil._instance;
   }
 
   public async init() {
+    console.log('init');
     this._iwallet = window['IWalletJS'];
     if (!this._iwallet) {
       throw new Error('Please use Chrome, And install iWallet extension. ');
@@ -54,6 +51,7 @@ export default class IOSUtil {
     this._iwallet.iost.setRPC(rpc);
     this._iost.config.gasLimit = 1000000;
 
+    console.log(`Logged in by ${this._account}`);
     IOSUtil._login = true;
   }
 
