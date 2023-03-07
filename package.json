@@ -4,7 +4,7 @@
   "description": "Memo dapp sample for IOST",
   "main": "index.js",
   "repository": "https://github.com/takaowada/iost-dapp-sample.git",
-  "author": "Takao Wada <wada@eversystem.co.jp>",
+  "author": "Takao Wada <takao.wada3@gmail.com>",
   "license": "MIT",
   "type": "module",
   "scripts": {
