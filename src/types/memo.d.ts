@@ -1,4 +1,4 @@
-interface Memo {
+export interface Memo {
   id: string,
   memo: string
 }

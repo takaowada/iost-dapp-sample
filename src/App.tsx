@@ -4,6 +4,7 @@ import { Container, Box, Typography, Stack, TextField, Button, Divider, Alert } 
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import IOSUtil from './iosUtil';
 import './App.css'
+import { Memo } from './types/memo';
 
 const columns: GridColDef[] = [
   {
@@ -20,7 +21,7 @@ const columns: GridColDef[] = [
 
 function App() {
   const [memos, setMemos] = React.useState<Memo[]>([]);
-  const [response, setResponse] = useState<Memo>([]);
+  const [response, setResponse] = useState<string>('');
   const [err, setErr] = useState<string>("");
 
   const {
@@ -29,8 +30,8 @@ function App() {
     formState: { errors }
   } = useForm<Memo>({
     defaultValues: {
-      id: "",
-      memo: ""
+      id: '',
+      memo: ''
     }
   })
 
