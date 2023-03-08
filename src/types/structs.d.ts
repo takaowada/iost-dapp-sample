@@ -7,7 +7,7 @@ declare namespace IOST {
     public signatures: []
     public publisher: string
     public publisher_sigs: string[]
-    public amount_limit: []
+    public amount_limit: any[]
     public chain_id: number
     public reserved: null
     public delay: number
