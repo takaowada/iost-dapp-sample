@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Container, Box, Typography, Stack, TextField, Button, Divider, Alert } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import IOSUtil from './iosUtil';
+import { iosUtil } from './iosUtil';
+import { Memo } from './@types/memo';
 import './App.css'
-import { Memo } from './types/memo';
 
 const columns: GridColDef[] = [
   {
@@ -38,9 +38,8 @@ function App() {
   useEffect(() => {
     const f = async () => {
       try {
-        const iostUtil = IOSUtil.getInstance();
-        await iostUtil.init();
-        const currentMemo = await iostUtil.getMemos();
+        await iosUtil.init();
+        const currentMemo = await iosUtil.getMemos();
         setMemos(currentMemo);
         console.log('memos', currentMemo);
       } catch (e) {
@@ -63,7 +62,7 @@ function App() {
 
   const onSubmit: SubmitHandler<Memo> = async (data: Memo) => {
     console.log('data', data);
-    const handler = await IOSUtil.getInstance().putMemo(data.id, data.memo);
+    const handler = await iosUtil.putMemo(data.id, data.memo);
     handler
       .on("pending", () => {
         console.log('Start tx.');
@@ -72,7 +71,7 @@ function App() {
         console.log('Success... tx', response);
         setResponse(response);
         console.log('response', JSON.stringify(response));
-        const memos = await IOSUtil.getInstance().getMemos();
+        const memos = await iosUtil.getMemos();
         setMemos(memos);
       })
       .on("failed", (err: any) => {

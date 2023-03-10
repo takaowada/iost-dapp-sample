@@ -1,5 +1,5 @@
-import Iost from 'iost';
-import { Memo } from './types/memo';
+import IOST from 'iost';
+import { Memo } from './@types/memo';
 
 const CONTRACT_ADDRESS = 'Contract8iaQifhsGgbABKXFuen6tLL4xbonD87TiSWTYh3VLV93';
 const CONTRACT_OWNER = 'alice';
@@ -37,12 +37,13 @@ const LOCALNET: Network = {
   defaultLimit: 1000000,
 };
 
-export default class IOSUtil {
+class IOSUtil {
   private static _instance: IOSUtil;
   private _iwallet: any = null;
   private _iost: IOST.IOST;
   private _network: Network = LOCALNET;
-  private _account: string = '';
+  private _account: IOST.Account = new IOST.Account('');
+  private _accountId: string = '';
   private static _login: boolean = false;
 
   private constructor() {
@@ -60,46 +61,51 @@ export default class IOSUtil {
 
   public async init(): Promise<void> {
     console.log('init');
+    // iWallet extension の取得
     this._iwallet = window['IWalletJS'];
-
-    console.log('iwallet:', this._iwallet);
-
     if (!this._iwallet) {
       throw new Error('Please use Chrome, And install iWallet extension. ');
     }
 
-    this._iost = this._iwallet.newIOST(Iost)
+    // ログインアカウントの取得
+    try {
+      this._accountId = await this._iwallet.enable();
+      console.log('Login account:', this._accountId);
+    } catch (e) {
+      throw new Error('The iWallet locked. Unlock iWallet. ');
+    }
+    if (!this._accountId) {
+      throw new Error('Please login.');
+    }
+
+    // IOSTオブジェクトの作成
+    this._iost = this._iwallet.newIOST(IOST)
     if (!this._iost) {
       throw new Error('Please use iWallet plugin.');
     }
 
+    console.log('iwallet:', this._iwallet);
+
     if (this._iwallet.network === MAINNET.id) {
       this._network = MAINNET;
     }
-    const provider = new Iost.HTTPProvider(this._network.host);
-    const rpc = new Iost.RPC(provider);
+    const provider = new IOST.HTTPProvider(this._network.host);
+    const rpc = new IOST.RPC(provider);
     this._iost.rpc = rpc;
     this._iost.currentRPC = rpc;
     this._iwallet.iost.setRPC(rpc);
     this._iost.config.gasLimit = 1000000;
 
-    try {
-      this._account = await this._iwallet.enable();
-      console.log('Login account:', this._account);
-    } catch (e) {
-      throw new Error('The iWallet locked. Unlock iWallet. ');
-    }
+    //this._account = new IOST.Account(accountId);
+    //console.log('this._account:', this._account);
 
-    if (!this._account) {
-      throw new Error('Please login.');
-    }
     this._iost.setAccount(this._account);
 
-    console.log(`Logged in by ${this._account}`);
+    console.log(`Logged in by ${this._accountId}`);
     IOSUtil._login = true;
   }
 
-  getAccount(): string {
+  getAccount(): IOST.Account {
     return this._account;
   }
 
@@ -120,7 +126,7 @@ export default class IOSUtil {
   async getMemos(): Promise<Memo[]> {
     const memos: Memo[] = [];
     if (this._iost && this._iost.rpc) {
-      const res = await this._iost.rpc.blockchain.getContractStorageFields(CONTRACT_ADDRESS, this._iost.currentAccount, true);
+      const res = await this._iost.rpc.blockchain.getContractStorageFields(CONTRACT_ADDRESS, this._accountId, true);
       if (!res || !res.fields) {
         return [];
       }
@@ -128,7 +134,7 @@ export default class IOSUtil {
       for (let i = 0; i < ids.length; i++) {
         const res = await this._iost.rpc.blockchain.getContractStorage(
           CONTRACT_ADDRESS,
-          this._iost.currentAccount,
+          this._accountId,
           ids[i],
           true
         );
@@ -143,3 +149,5 @@ export default class IOSUtil {
     return memos;
   }
 }
+
+export const iosUtil = IOSUtil.getInstance();
