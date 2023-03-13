@@ -2,7 +2,7 @@ import IOST from 'iost';
 import { Memo } from './@types/memo';
 
 const CONTRACT_ADDRESS = 'Contract8iaQifhsGgbABKXFuen6tLL4xbonD87TiSWTYh3VLV93';
-const CONTRACT_OWNER = 'alice';
+//const CONTRACT_OWNER = 'alice';
 
 export interface Network {
   host: string;
@@ -43,8 +43,8 @@ class IOSUtil {
   private _iost: IOST.IOST;
   private _network: Network = LOCALNET;
   private _account: IOST.Account = new IOST.Account('');
-  private _accountId: string = '';
-  private static _login: boolean = false;
+  private _accountId = '';
+  private static _login = false;
 
   private constructor() {
     this._iost = new IOST.IOST();
